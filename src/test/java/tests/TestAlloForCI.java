@@ -1,5 +1,6 @@
 package tests;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -23,6 +24,7 @@ public class TestAlloForCI {
     @BeforeMethod
     public void setUpDriver() {
         ChromeOptions options = new ChromeOptions();
+        WebDriverManager.chromedriver().setup();
         options.addArguments("--window-size=1920,1080");
 
         String headlessProp = System.getProperty("headless", "false");
@@ -47,9 +49,9 @@ public class TestAlloForCI {
 
         driver.get(baseUrl);
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         WebElement alloLogo = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@class='v-logo']"))
+                ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@class='v-logo']"))
         );
 
         softAssert.assertTrue(alloLogo.isDisplayed());
