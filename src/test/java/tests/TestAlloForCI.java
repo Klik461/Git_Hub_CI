@@ -76,7 +76,7 @@ public class TestAlloForCI {
 
         driver.get(baseUrl);
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(25));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         // *** ВАЖЛИВО: Наявність NoSuchElementException (що призводить до TimeoutException) відбувається тут ***
         WebElement alloLogo = wait.until(
