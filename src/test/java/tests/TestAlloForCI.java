@@ -72,7 +72,7 @@ public class TestAlloForCI {
 
     @Test
     public void checkAlloLogo() {
-        String baseUrl = "https://allo.ua/";
+        String baseUrl = "https://rozetka.com.ua/";
 
         driver.get(baseUrl);
 
@@ -80,7 +80,7 @@ public class TestAlloForCI {
 
         // *** ВАЖЛИВО: Наявність NoSuchElementException (що призводить до TimeoutException) відбувається тут ***
         WebElement alloLogo = wait.until(
-                ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@class='v-logo']"))
+                ExpectedConditions.presenceOfElementLocated(By.xpath("//img[@alt='Rozetka Logo']"))
         );
 
         // Якщо елемент присутній, ми прокручуємо до нього
