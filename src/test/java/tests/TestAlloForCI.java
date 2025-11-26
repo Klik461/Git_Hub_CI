@@ -15,8 +15,6 @@ import org.testng.asserts.SoftAssert;
 
 import java.time.Duration;
 
-import static java.lang.Thread.sleep;
-
 public class TestAlloForCI {
     WebDriver driver;
     SoftAssert softAssert = new SoftAssert();
@@ -25,6 +23,10 @@ public class TestAlloForCI {
     public void setUpDriver() {
         ChromeOptions options = new ChromeOptions();
         WebDriverManager.chromedriver().setup();
+
+        // *** ВИПРАВЛЕННЯ: Блокуємо спливаючі вікна запиту на сповіщення ***
+        options.addArguments("--disable-notifications");
+
         options.addArguments("--window-size=1920,1080");
 
         String headlessProp = System.getProperty("headless", "false");
@@ -49,13 +51,16 @@ public class TestAlloForCI {
 
         driver.get(baseUrl);
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        // Оскільки вікно сповіщень більше не блокує, 25 секунд має бути достатньо
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(25));
+
+        // Чекаємо саме на видимість, оскільки ми перевіряємо isDisplayed()
         WebElement alloLogo = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@class='v-logo']"))
         );
 
+        // Якщо елемент visible, він також isDisplayed()
         softAssert.assertTrue(alloLogo.isDisplayed());
         softAssert.assertAll();
     }
-
 }
