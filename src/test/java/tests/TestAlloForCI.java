@@ -51,7 +51,7 @@ public class TestAlloForCI {
         driver = new ChromeDriver(options);
 
         // Встановлюємо таймаут завантаження сторінки (Page Load)
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(90));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(60));
 
         if (!isHeadless) {
             driver.manage().window().maximize();
