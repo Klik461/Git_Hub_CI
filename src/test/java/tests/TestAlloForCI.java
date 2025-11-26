@@ -15,15 +15,17 @@ import static java.lang.Thread.sleep;
 public class TestAlloForCI {
     WebDriver driver;
     SoftAssert softAssert = new SoftAssert();
-    ChromeOptions options = new ChromeOptions();
-
-    boolean headless = false;
 
     @BeforeMethod
     public void setUpDriver() {
-        if (headless) {
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--window-size=1920,1080");
+
+        String headlessProp = System.getProperty("headless", "false");
+        boolean isHeadless = Boolean.parseBoolean(headlessProp);
+
+        if (isHeadless) {
             options.addArguments("--headless=new");
-            options.addArguments("--window-size=1920,1080");
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
         }
@@ -45,6 +47,7 @@ public class TestAlloForCI {
         WebElement alloLogo = driver.findElement(By.xpath("//a[@class='v-logo']"));
 
         softAssert.assertTrue(alloLogo.isDisplayed());
+        softAssert.assertAll();
     }
 
 }
