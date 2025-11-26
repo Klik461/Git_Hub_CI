@@ -43,7 +43,7 @@ public class TestAlloForCI {
 
         driver.get(baseUrl);
 
-        sleep(5000);
+        sleep(10000);
         WebElement alloLogo = driver.findElement(By.xpath("//a[@class='v-logo']"));
 
         softAssert.assertTrue(alloLogo.isDisplayed());
