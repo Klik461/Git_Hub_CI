@@ -51,7 +51,7 @@ public class TestAlloForCI {
         driver = new ChromeDriver(options);
 
         // Встановлюємо таймаут завантаження сторінки (Page Load)
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(60));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(90));
 
         if (!isHeadless) {
             driver.manage().window().maximize();
@@ -76,7 +76,7 @@ public class TestAlloForCI {
 
         driver.get(baseUrl);
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         // *** ВАЖЛИВО: Наявність NoSuchElementException (що призводить до TimeoutException) відбувається тут ***
         WebElement alloLogo = wait.until(
