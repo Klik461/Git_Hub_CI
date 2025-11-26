@@ -1,28 +1,29 @@
 package tests;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.*; // Залишаємо лише один імпорт, щоб включити TakesScreenshot, File, OutputType
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.ITestResult; // *** ДОДАНО ДЛЯ ОБРОБКИ РЕЗУЛЬТАТІВ ТЕСТУ ***
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.File; // Для роботи з файлами
-import java.io.IOException; // Для обробки винятків при роботі з файлами
-import java.nio.file.Files; // Для копіювання файлів
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+
 public class TestAlloForCI {
     WebDriver driver;
 
-    // Визначаємо менший розмір
     private static final String WINDOW_SIZE = "--window-size=1280,720";
 
     @BeforeMethod
@@ -41,16 +42,12 @@ public class TestAlloForCI {
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
 
-            // *** АГРЕСИВНІ АРГУМЕНТИ ДЛЯ STABILITY НА CI ***
             options.addArguments("--disable-gpu");
             options.addArguments("--disable-features=IsolateOrigins,site-per-process");
             options.addArguments("--remote-allow-origins=*");
-            // ***********************************************
         }
 
         driver = new ChromeDriver(options);
-
-        // Встановлюємо таймаут завантаження сторінки (Page Load)
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(90));
 
         if (!isHeadless) {
@@ -58,11 +55,9 @@ public class TestAlloForCI {
         }
     }
 
-    // *** ОНОВЛЕННЯ: Метод приймає ITestResult, щоб перевірити статус тесту ***
     @AfterMethod
     public void quitDriver(ITestResult result) {
         if (driver != null) {
-            // Перевіряємо, чи тест не пройшов (статус FAILURE)
             if (result.getStatus() == ITestResult.FAILURE) {
                 takeScreenshot(result.getMethod().getMethodName());
             }
@@ -78,37 +73,25 @@ public class TestAlloForCI {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-        // *** ВАЖЛИВО: Наявність NoSuchElementException (що призводить до TimeoutException) відбувається тут ***
-        WebElement alloLogo = wait.until(
-                ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='tad-logo']"))
-        );
+        WebElement alloLogo = wait.until(presenceOfElementLocated(By.xpath("//div[@class='tad-logo']")));
 
-        // Якщо елемент присутній, ми прокручуємо до нього
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", alloLogo);
-
-        // Тепер перевіряємо, чи він відображається.
         Assert.assertTrue(alloLogo.isDisplayed());
     }
 
-    // *** НОВИЙ ДОПОМІЖНИЙ МЕТОД ДЛЯ СТВОРЕННЯ СКРІНШОТА ***
     public void takeScreenshot(String testName) {
         if (driver instanceof TakesScreenshot) {
-            // 1. Створюємо унікальне ім'я файлу
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
             String fileName = testName + "_" + timestamp + ".png";
 
-            // 2. Визначаємо цільову директорію у корені проекту
             File screenshotDir = new File("target/screenshots");
             if (!screenshotDir.exists()) {
-                screenshotDir.mkdirs(); // Створюємо директорію, якщо її немає
+                screenshotDir.mkdirs();
             }
             File destFile = new File(screenshotDir, fileName);
 
             try {
-                // 3. Робимо знімок екрана
                 File sourceFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
-                // 4. Копіюємо файл
                 Files.copy(sourceFile.toPath(), destFile.toPath());
                 System.out.println("🖼️ Знімок екрана збережено: " + destFile.getAbsolutePath());
 
@@ -120,5 +103,5 @@ public class TestAlloForCI {
             }
         }
     }
-    // *****************************************************************
+
 }
