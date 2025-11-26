@@ -1,0 +1,43 @@
+name: Maven UI Tests (Allo) # Назва, яка відображатиметься в інтерфейсі GitHub Actions
+
+# 1. Тригер: КОЛИ запускати workflow
+on:
+  push:
+    branches: [ main ] # Запускати при push в гілку main
+  pull_request:
+    branches: [ main ] # Запускати при створенні Pull Request в main
+
+# 2. Jobs: Що саме робити
+jobs:
+  test:
+    name: Run Selenium Headless Tests
+
+    # Середовище: На якій системі виконувати команди
+    runs-on: ubuntu-latest
+
+    # 3. Steps: Послідовність дій
+    steps:
+
+      # Крок 1: Клонування коду
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Крок 2: Налаштування Java
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17' # Версія Java має відповідати вашому pom.xml
+          distribution: 'temurin'
+          cache: maven # Кешування залежностей Maven для швидшого запуску
+
+      # Крок 3: Встановлення браузера Chrome (Обов'язково для Selenium)
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install google-chrome-stable -y
+
+      # Крок 4: Запуск тестів Maven
+      - name: Run Maven Tests in Headless Mode
+        run: |
+          # Використовуємо наш перемикач -Dheadless=true
+          mvn clean test -Dheadless=true
