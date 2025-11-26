@@ -5,10 +5,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
+
+import java.time.Duration;
 
 import static java.lang.Thread.sleep;
 
@@ -38,13 +42,15 @@ public class TestAlloForCI {
     }
 
     @Test
-    public void checkAlloLogo() throws InterruptedException {
+    public void checkAlloLogo() {
         String baseUrl = "https://allo.ua/";
 
         driver.get(baseUrl);
 
-        sleep(10000);
-        WebElement alloLogo = driver.findElement(By.xpath("//a[@class='v-logo']"));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement alloLogo = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@class='v-logo']"))
+        );
 
         softAssert.assertTrue(alloLogo.isDisplayed());
         softAssert.assertAll();
