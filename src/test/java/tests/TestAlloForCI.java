@@ -68,7 +68,7 @@ public class TestAlloForCI {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(25));
 
         WebElement alloLogo = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@class='v-logo']"))
+                ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@class='mh-loc']"))
         );
 
         // *** ДОДАНО ВИПРАВЛЕННЯ: Скролінг до елемента ***
