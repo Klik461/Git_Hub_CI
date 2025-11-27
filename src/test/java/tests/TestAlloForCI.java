@@ -71,34 +71,36 @@ public class TestAlloForCI {
         }
     }
 
+
     @AfterClass
-    public void quitDriver() {
+    public void dropBrowser() {
         if (driver != null) {
             driver.quit();
         }
     }
 
+
     @Test
     public void checkAlloLogo() {
-//        assertTrue(wait.until(presenceOfElementLocated(
-//                By.xpath("//div[@class='logo']"))).isDisplayed());
-        assertTrue(false);
+        assertTrue(wait.until(presenceOfElementLocated(
+                By.xpath("//div[@class='logo']"))).isDisplayed());
     }
 
-    @Test(enabled = false)
+    @Test
     public void checkSizeCitiesOnPage() {
-        List<WebElement> listCompanyName = wait.until(presenceOfAllElementsLocatedBy(By.xpath("//div[@class='tb-scroll']//span[@class='wds']/../a")));
+        List<WebElement> listCompanyName = wait.until(presenceOfAllElementsLocatedBy(
+                By.xpath("//li[@class='mega-menu--item']/a/span")));
 
-        assertEquals(listCompanyName.size(), 143);
+        assertEquals(listCompanyName.size(), 18);
 
         listCompanyName.stream()
                 .map(WebElement::getText)
-                .map(name -> "___" + name)
+                .map(name -> "-> " + name)
                 .forEach(System.out::println);
 
         assertTrue(listCompanyName.stream()
                 .map(WebElement::getText)
-                .anyMatch(name -> name.contains("Tokyo")));
+                .anyMatch(name -> name.contains("Аудіо, фото та відео")));
     }
 
     private void takeScreenshot(String testName) {
