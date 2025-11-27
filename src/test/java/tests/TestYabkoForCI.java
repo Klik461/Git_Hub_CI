@@ -21,7 +21,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-public class TestAlloForCI {
+public class TestYabkoForCI {
     WebDriver driver;
     WebDriverWait wait;
 
@@ -71,7 +71,6 @@ public class TestAlloForCI {
         }
     }
 
-
     @AfterClass
     public void dropBrowser() {
         if (driver != null) {
@@ -79,26 +78,25 @@ public class TestAlloForCI {
         }
     }
 
-
     @Test
-    public void checkAlloLogo() {
+    public void checkYabkoLogo() {
         assertTrue(wait.until(presenceOfElementLocated(
                 By.xpath("//div[@class='logo']"))).isDisplayed());
     }
 
     @Test
-    public void checkSizeCitiesOnPage() {
-        List<WebElement> listCompanyName = wait.until(presenceOfAllElementsLocatedBy(
+    public void checkListOptionsCategory() {
+        List<WebElement> categoryNames = wait.until(presenceOfAllElementsLocatedBy(
                 By.xpath("//li[@class='mega-menu--item']/a/span")));
 
-        assertEquals(listCompanyName.size(), 18);
+        assertEquals(categoryNames.size(), 18);
 
-        listCompanyName.stream()
+        categoryNames.stream()
                 .map(WebElement::getText)
                 .map(name -> "-> " + name)
                 .forEach(System.out::println);
 
-        assertTrue(listCompanyName.stream()
+        assertTrue(categoryNames.stream()
                 .map(WebElement::getText)
                 .anyMatch(name -> name.contains("Аудіо, фото та відео")));
     }
