@@ -80,8 +80,9 @@ public class TestAlloForCI {
 
     @Test
     public void checkAlloLogo() {
-        assertTrue(wait.until(presenceOfElementLocated(
-                By.xpath("//div[@class='logo']"))).isDisplayed());
+//        assertTrue(wait.until(presenceOfElementLocated(
+//                By.xpath("//div[@class='logo']"))).isDisplayed());
+        assertTrue(false);
     }
 
     @Test(enabled = false)
