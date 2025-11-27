@@ -26,7 +26,7 @@ public class TestAlloForCI {
     WebDriverWait wait;
 
     private static final String WINDOW_SIZE = "--window-size=1920,1080";
-    private final static String BASE_URL = "https://www.timeanddate.com/worldclock/";
+    private final static String BASE_URL = "https://jabko.ua/";
 
     @BeforeClass
     public void setUpDriver() {
@@ -81,10 +81,10 @@ public class TestAlloForCI {
     @Test
     public void checkAlloLogo() {
         assertTrue(wait.until(presenceOfElementLocated(
-                By.xpath("//div[@class='tad-logo']"))).isDisplayed());
+                By.xpath("//div[@class='logo']"))).isDisplayed());
     }
 
-    @Test
+    @Test(enabled = false)
     public void checkSizeCitiesOnPage() {
         List<WebElement> listCompanyName = wait.until(presenceOfAllElementsLocatedBy(By.xpath("//div[@class='tb-scroll']//span[@class='wds']/../a")));
 
