@@ -50,7 +50,7 @@ public class TestAlloForCI {
         }
 
         driver = new ChromeDriver(options);
-//        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(90));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(90));
 
         if (!isHeadless) {
             driver.manage().window().maximize();
