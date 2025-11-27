@@ -4,13 +4,9 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,15 +14,21 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class TestAlloForCI {
     WebDriver driver;
+    WebDriverWait wait;
 
-    private static final String WINDOW_SIZE = "--window-size=1280,720";
+    private static final String WINDOW_SIZE = "--window-size=1920,1080";
+    private final static String BASE_URL = "https://jabko.ua/";
 
-    @BeforeMethod
+    @BeforeClass
     public void setUpDriver() {
         ChromeOptions options = new ChromeOptions();
         WebDriverManager.chromedriver().setup();
@@ -53,32 +55,55 @@ public class TestAlloForCI {
         if (!isHeadless) {
             driver.manage().window().maximize();
         }
+
+        wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+    }
+
+    @BeforeMethod
+    public void openUrl() {
+        driver.get(BASE_URL);
     }
 
     @AfterMethod
-    public void quitDriver(ITestResult result) {
+    public void takeScreenShotIfTestFailed(ITestResult result) {
+        if (result.getStatus() == ITestResult.FAILURE) {
+            takeScreenshot(result.getMethod().getMethodName());
+        }
+    }
+
+
+    @AfterClass
+    public void dropBrowser() {
         if (driver != null) {
-            if (result.getStatus() == ITestResult.FAILURE) {
-                takeScreenshot(result.getMethod().getMethodName());
-            }
             driver.quit();
         }
     }
 
+
     @Test
     public void checkAlloLogo() {
-        String baseUrl = "https://www.timeanddate.com/worldclock/";
-
-        driver.get(baseUrl);
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-
-        WebElement alloLogo = wait.until(presenceOfElementLocated(By.xpath("//div[@class='tad-logo']")));
-
-        Assert.assertTrue(alloLogo.isDisplayed());
+        assertTrue(wait.until(presenceOfElementLocated(
+                By.xpath("//div[@class='logo']"))).isDisplayed());
     }
 
-    public void takeScreenshot(String testName) {
+    @Test
+    public void checkSizeCitiesOnPage() {
+        List<WebElement> listCompanyName = wait.until(presenceOfAllElementsLocatedBy(
+                By.xpath("//li[@class='mega-menu--item']/a/span")));
+
+        assertEquals(listCompanyName.size(), 18);
+
+        listCompanyName.stream()
+                .map(WebElement::getText)
+                .map(name -> "-> " + name)
+                .forEach(System.out::println);
+
+        assertTrue(listCompanyName.stream()
+                .map(WebElement::getText)
+                .anyMatch(name -> name.contains("Аудіо, фото та відео")));
+    }
+
+    private void takeScreenshot(String testName) {
         if (driver instanceof TakesScreenshot) {
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
             String fileName = testName + "_" + timestamp + ".png";
