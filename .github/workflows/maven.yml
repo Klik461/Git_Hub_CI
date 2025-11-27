@@ -1,4 +1,4 @@
-name: Maven UI Tests (Allo) # Назва, яка відображатиметься в інтерфейсі GitHub Actions
+name: Smoke Maven UI Test Started # Назва, яка відображатиметься в інтерфейсі GitHub Actions
 
 # 1. Тригер: КОЛИ запускати workflow
 on:
@@ -10,7 +10,7 @@ on:
 # 2. Jobs: Що саме робити
 jobs:
   test:
-    name: Run Selenium Headless Tests
+    name: Run Smoke Test
 
     # Середовище: На якій системі виконувати команди
     runs-on: ubuntu-latest
@@ -40,7 +40,8 @@ jobs:
       - name: Run Maven Tests in Headless Mode
         run: |
           # Використовуємо наш перемикач -Dheadless=true
-          mvn clean test -Dheadless=true
+          # Використовуємо для тестування Smoke запуск тільки одного тесту -Dtest=tests.TestYabkoForCI#checkYabkoLogo
+          mvn clean test -Dtest=tests.TestYabkoForCI#checkYabkoLogo -Dheadless=true
 
       # -------------------------------------------------------------------
       # *** НОВИЙ КРОК: ПУБЛІКАЦІЯ СКРІНШОТІВ ЯК АРТЕФАКТІВ ***
