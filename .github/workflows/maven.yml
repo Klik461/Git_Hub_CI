@@ -41,7 +41,7 @@ jobs:
         run: |
           # Використовуємо наш перемикач -Dheadless=true
           # Використовуємо для тестування Smoke запуск тільки одного тесту -Dtest=tests.TestYabkoForCI#checkYabkoLogo
-          mvn clean test -Dtest=tests.TestYabkoForCI#checkYabkoLogo -Dheadless=true
+          mvn clean test -Dtest=tests.IntertopFlowTest#checkIntertopLogoDisplay -Dheadless=true
 
       # -------------------------------------------------------------------
       # *** НОВИЙ КРОК: ПУБЛІКАЦІЯ СКРІНШОТІВ ЯК АРТЕФАКТІВ ***
